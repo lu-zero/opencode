@@ -28,9 +28,9 @@
     "@std/semver": "jsr:@std/semver@^1.0",
     "@std/cli": "jsr:@std/cli@^1.0",
 
-    "bun": "./bun-compat/src/from-bun.ts",
-    "bun:install": "./bun-compat/src/install.ts",
-    "bun:sqlite": "./bun-compat/src/sqlite.ts",
+    "bun": "jsr:@lu-zero/bun-compat@^0.1/bun",
+    "bun:install": "jsr:@lu-zero/bun-compat@^0.1/install",
+    "bun:sqlite": "jsr:@lu-zero/bun-compat@^0.1/sqlite",
     "bun:ffi": "./src/util/stub.ts",
     "bun-pty": "./shims/bun-pty.ts",
 
