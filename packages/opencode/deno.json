@@ -1,0 +1,72 @@
+{
+  "nodeModulesDir": "manual",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "@opentui/solid",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "noUnusedParameters": false
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-sloppy-imports"]
+    }
+  },
+  "imports": {
+    "@/": "./src/",
+    "@tui/": "./src/cli/cmd/tui/",
+    "@opencode-ai/util/": "../util/src/",
+    "@opencode-ai/plugin/": "../plugin/src/",
+    "@opencode-ai/sdk/": "../sdk/js/src/",
+    "@opencode-ai/script/": "../script/src/",
+    "@std/assert": "jsr:@std/assert@^1.0",
+    "@std/fs": "jsr:@std/fs@^1.0",
+    "@std/path": "jsr:@std/path@^1.0",
+    "@std/media-types": "jsr:@std/media-types@^1.0",
+    "@std/toml": "jsr:@std/toml@^1.0",
+    "@std/yaml": "jsr:@std/yaml@^1.0",
+    "@std/jsonc": "jsr:@std/jsonc@^1.0",
+    "@std/semver": "jsr:@std/semver@^1.0",
+    "@std/cli": "jsr:@std/cli@^1.0",
+
+    "bun": "./bun-compat/src/from-bun.ts",
+    "bun:install": "./bun-compat/src/install.ts",
+    "bun:sqlite": "./bun-compat/src/sqlite.ts",
+    "bun:ffi": "./src/util/stub.ts",
+    "bun-pty": "./shims/bun-pty.ts",
+
+    "#db": "./src/storage/db.node.ts",
+
+    "drizzle-orm/bun-sqlite": "./shims/drizzle-bun-sqlite.ts",
+    "drizzle-orm/bun-sqlite/migrator": "./shims/drizzle-bun-sqlite-migrator.ts",
+
+    "path": "node:path",
+    "os": "node:os",
+    "fs": "node:fs",
+    "fs/promises": "node:fs/promises",
+    "stream": "node:stream",
+    "events": "node:events",
+    "crypto": "node:crypto",
+    "buffer": "node:buffer",
+    "util": "node:util",
+    "url": "node:url",
+    "net": "node:net",
+    "http": "node:http",
+    "https": "node:https",
+    "child_process": "node:child_process",
+    "string_decoder": "node:string_decoder",
+    "assert": "node:assert",
+    "readline": "node:readline",
+    "zlib": "node:zlib",
+    "tty": "node:tty",
+    "dns": "node:dns",
+    "dgram": "node:dgram",
+    "perf_hooks": "node:perf_hooks",
+    "async_hooks": "node:async_hooks",
+    "stream/promises": "node:stream/promises",
+    "v8": "node:v8",
+    "node:sqlite": "node:sqlite",
+
+    "@parcel/watcher/wrapper": "./node_modules/@parcel/watcher/wrapper.js",
+    "vscode-jsonrpc/node": "./node_modules/vscode-jsonrpc/node.js"
+  }
+}
