@@ -2,7 +2,7 @@ import z from "zod"
 import { Effect } from "effect"
 import { Tool } from "./tool"
 import { Question } from "../question"
-import DESCRIPTION from "./question.txt"
+import DESCRIPTION from "./question.txt.ts"
 
 const parameters = z.object({
   questions: z.array(Question.Info.omit({ custom: true })).describe("Questions to ask"),

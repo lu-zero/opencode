@@ -8,8 +8,8 @@ import { Config } from "../config/config"
 import { MCP } from "../mcp"
 import { Skill } from "../skill"
 import { Log } from "../util/log"
-import PROMPT_INITIALIZE from "./template/initialize.txt"
-import PROMPT_REVIEW from "./template/review.txt"
+import PROMPT_INITIALIZE from "./template/initialize.txt.ts"
+import PROMPT_REVIEW from "./template/review.txt.ts"
 
 export namespace Command {
   const log = Log.create({ service: "command" })

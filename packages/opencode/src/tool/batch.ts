@@ -2,7 +2,7 @@ import z from "zod"
 import { Tool } from "./tool"
 import { ProviderID, ModelID } from "../provider/schema"
 import { errorMessage } from "../util/error"
-import DESCRIPTION from "./batch.txt"
+import DESCRIPTION from "./batch.txt.ts"
 
 const DISALLOWED = new Set(["batch"])
 const FILTERED_FROM_SUGGESTIONS = new Set(["invalid", "patch", ...DISALLOWED])

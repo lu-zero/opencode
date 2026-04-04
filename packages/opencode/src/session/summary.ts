@@ -4,7 +4,7 @@ import { makeRuntime } from "@/effect/run-service"
 import { Bus } from "@/bus"
 import { Snapshot } from "@/snapshot"
 import { Storage } from "@/storage/storage"
-import { Session } from "."
+import { Session } from "./index.ts"
 import { MessageV2 } from "./message-v2"
 import { SessionID, MessageID } from "./schema"
 

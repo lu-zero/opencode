@@ -5,7 +5,7 @@ import { Filesystem } from "../util/filesystem"
 import { Ripgrep } from "../file/ripgrep"
 import { Process } from "../util/process"
 
-import DESCRIPTION from "./grep.txt"
+import DESCRIPTION from "./grep.txt.ts"
 import { Instance } from "../project/instance"
 import path from "path"
 import { assertExternalDirectory } from "./external-directory"

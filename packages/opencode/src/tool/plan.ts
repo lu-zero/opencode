@@ -7,7 +7,7 @@ import { MessageV2 } from "../session/message-v2"
 import { Provider } from "../provider/provider"
 import { Instance } from "../project/instance"
 import { type SessionID, MessageID, PartID } from "../session/schema"
-import EXIT_DESCRIPTION from "./plan-exit.txt"
+import EXIT_DESCRIPTION from "./plan-exit.txt.ts"
 
 async function getLastModel(sessionID: SessionID) {
   for await (const item of MessageV2.stream(sessionID)) {

@@ -1,6 +1,6 @@
 import { NotFoundError, eq, and } from "../storage/db"
 import { SyncEvent } from "@/sync"
-import { Session } from "./index"
+import { Session } from "./index.ts"
 import { MessageV2 } from "./message-v2"
 import { SessionTable, MessageTable, PartTable } from "./session.sql"
 import { ProjectTable } from "../project/project.sql"
