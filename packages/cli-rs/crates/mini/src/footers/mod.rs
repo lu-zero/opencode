@@ -1861,12 +1861,14 @@ fn form_client(target: &Target, form: &FormInfo) -> Client {
 /// `openUrl`: a form's URL is not trusted to name a web link, so anything else fails before a process starts.
 fn open_url(url: &str) -> bool {
     let Ok(url) = opencode_ui::open::web_url(url) else { return false };
-    opencode_ui::open::command(&url)
-        .stdin(std::process::Stdio::null())
-        .stdout(std::process::Stdio::null())
-        .stderr(std::process::Stdio::null())
-        .spawn()
-        .is_ok()
+    opencode_ui::open::commands(&url).into_iter().any(|mut command| {
+        command
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn()
+            .is_ok()
+    })
 }
 
 /// `RunCommandMenuBody`'s entries.

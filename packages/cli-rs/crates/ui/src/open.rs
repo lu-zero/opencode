@@ -16,16 +16,94 @@ pub fn web_url(input: &str) -> Result<String, String> {
     }
 }
 
-/// A command that opens `target` in the system's default app. The caller sets stdio and spawns it.
+/// Commands that can open `target`, in order: `$BROWSER` candidates first,
+/// then the platform opener. The caller sets stdio and spawns them.
+pub fn commands(target: &str) -> Vec<Command> {
+    let browser = if cfg!(windows) {
+        None
+    } else {
+        std::env::var("BROWSER").ok().filter(|value| !value.trim().is_empty())
+    };
+    let mut out: Vec<Command> = browser
+        .as_deref()
+        .into_iter()
+        .flat_map(|value| browser_entries(target, value))
+        .map(|(program, args)| configured(program, args))
+        .collect();
+    if out.is_empty() {
+        out.push(system_command(target));
+    }
+    out
+}
+
+/// The first opener, for callers that cannot try a fallback.
 pub fn command(target: &str) -> Command {
-    let system_root = std::env::var("SYSTEMROOT").or_else(|_| std::env::var("windir")).ok();
-    let (program, args) = opener(std::env::consts::OS, target, system_root.as_deref());
+    commands(target).into_iter().next().expect("an opener")
+}
+
+fn configured(program: String, args: Vec<String>) -> Command {
     let mut command = Command::new(program);
     // `open` detaches `xdg-open`, so a browser it starts does not stop with this client's group on Ctrl+Z.
     #[cfg(all(unix, not(target_os = "macos")))]
     std::os::unix::process::CommandExt::process_group(&mut command, 0);
     command.args(args);
     command
+}
+
+fn system_command(target: &str) -> Command {
+    let system_root = std::env::var("SYSTEMROOT").or_else(|_| std::env::var("windir")).ok();
+    let (program, args) = opener(std::env::consts::OS, target, system_root.as_deref());
+    configured(program, args)
+}
+
+/// `$BROWSER` follows the Rust `webbrowser` contract: colon-separated
+/// candidates, whitespace-separated arguments, `%s`/`%c`/`%%` field codes,
+/// and the URL appended when no `%s` names a place for it.
+fn browser_entries(target: &str, browser: &str) -> Vec<(String, Vec<String>)> {
+    browser
+        .split(':')
+        .filter_map(|entry| {
+            let mut parts = entry.split_whitespace();
+            let program = parts.next()?;
+            let mut args = Vec::new();
+            let mut placed = false;
+            for part in parts {
+                let (expanded, has_url) = expand_field(part, target);
+                placed |= has_url;
+                args.push(expanded);
+            }
+            if !placed {
+                args.push(target.to_owned());
+            }
+            Some((program.to_owned(), args))
+        })
+        .collect()
+}
+
+fn expand_field(part: &str, target: &str) -> (String, bool) {
+    let mut out = String::new();
+    let mut placed = false;
+    let mut chars = part.chars();
+    while let Some(ch) = chars.next() {
+        if ch != '%' {
+            out.push(ch);
+            continue;
+        }
+        match chars.next() {
+            Some('s') => {
+                out.push_str(target);
+                placed = true;
+            }
+            Some('c') => out.push(':'),
+            Some('%') => out.push('%'),
+            Some(other) => {
+                out.push('%');
+                out.push(other);
+            }
+            None => out.push('%'),
+        }
+    }
+    (out, placed)
 }
 
 /// The program and arguments for `os`. On Windows, `open` runs PowerShell's `Start` on the target, single-quoted and
@@ -111,5 +189,26 @@ mod tests {
             assert_eq!(args.len(), 6);
             assert_eq!(decode(&args[5]), format!("$ProgressPreference = 'SilentlyContinue'; Start {quoted}"));
         }
+    }
+
+    #[test]
+    fn browser_entries_append_the_url_and_expand_field_codes() {
+        let entries = browser_entries("https://example.com", "browser a%cb %% %s");
+        assert_eq!(
+            entries,
+            vec![("browser".to_owned(), vec!["a:b".to_owned(), "%".to_owned(), "https://example.com".to_owned()])]
+        );
+    }
+
+    #[test]
+    fn browser_entries_keep_candidates_in_order() {
+        let entries = browser_entries("https://example.com", "first:second --tab");
+        assert_eq!(
+            entries,
+            vec![
+                ("first".to_owned(), vec!["https://example.com".to_owned()]),
+                ("second".to_owned(), vec!["--tab".to_owned(), "https://example.com".to_owned()]),
+            ]
+        );
     }
 }

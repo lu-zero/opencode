@@ -73,7 +73,12 @@ fn open(target: &str) -> Result<(), String> {
     if testing::record(target) {
         return Ok(());
     }
-    spawn(opencode_ui::open::command(target)).map(drop)
+    for command in opencode_ui::open::commands(target) {
+        if spawn(command).is_ok() {
+            return Ok(());
+        }
+    }
+    Err("no browser opener could start".to_owned())
 }
 
 /// Starts `command` and waits for it off the UI thread, so the exited opener does not stay a zombie.
